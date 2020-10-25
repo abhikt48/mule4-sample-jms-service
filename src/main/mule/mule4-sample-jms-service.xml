@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="5ef807b2-83c6-4a2f-8218-79ecb76631b1" >
+		<jms:active-mq-connection username="admin" password="admin" >
+			<jms:factory-configuration brokerUrl="tcp://localhost:61616" />
+		</jms:active-mq-connection>
+	</jms:config>
+	<flow name="mule4-sample-jms-serviceFlow" doc:id="2b672135-d08a-47a7-afd0-ea326628794c" >
+		<jms:listener doc:name="On New Message" doc:id="c1aee490-6361-45c5-9036-2dcf9d5df64a" config-ref="JMS_Config" destination="test-inbound" ackMode="MANUAL" selector="JMSPriority=8">
+			<jms:consumer-type >
+				<jms:queue-consumer />
+			</jms:consumer-type>
+		</jms:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="70156cc5-f7a7-49fc-ae02-26584f0df471" message="#['Received message payload - ' ++ payload]"/>
+		<jms:publish doc:name="Publish" doc:id="060b2e82-5a17-4b7e-ac76-c829edc1238e" config-ref="JMS_Config" destination="test-outbound"/>
+		<jms:ack doc:name="Ack" doc:id="1b5dc766-a567-4a70-8be3-58a0e5554032" ackId="#[attributes.ackId]"/>
+		<jms:consume doc:name="Consume" doc:id="235df4b0-6b94-4c2f-9a70-1e5064c01e26" config-ref="JMS_Config" destination="test-intemediate" ackMode="IMMEDIATE">
+			<jms:consumer-type>
+				<jms:queue-consumer />
+			</jms:consumer-type>
+		</jms:consume>
+		<logger level="INFO" doc:name="Logger" doc:id="efe2bdf5-4301-4544-8ad1-725b2e6858ed" message="#['Completed processing successfully, payload - ' ++ payload]"/>
+	</flow>
+</mule>
