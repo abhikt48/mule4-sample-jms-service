@@ -6,3 +6,5 @@ Sample Mule4 JMS application to receive(consume) and publish(send) message with 
 2. Maven
 3. Anypoint Studion +7.6.0
 4. Active MQ
+
+Fancy for video, refer here  - [JMS-YouTube](https://youtu.be/0Yz25CoASmA)
